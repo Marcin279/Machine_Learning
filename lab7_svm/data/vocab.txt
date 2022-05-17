@@ -3,7 +3,7 @@
 3	abil
 4	abl
 5	about
-6   abov
+6	abov
 7	absolut
 8	abus
 9	ac
