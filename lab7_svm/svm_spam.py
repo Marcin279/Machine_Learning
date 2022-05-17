@@ -16,7 +16,9 @@ def read_file(file_path: str) -> str:
     """
 
     # FIXME: Implement.
-    raise NotImplementedError()
+    with open(file_path, encoding="utf-8") as f:
+        read_data = f.read()
+        return read_data
 
 
 # %% ==================== Part 1: Email Preprocessing ====================
@@ -72,15 +74,16 @@ print('\nTraining Linear SVM (Spam Classification)\n')
 print('(this may take 1 to 2 minutes) ...\n')
 
 # FIXME: Create a linear SVC classifier (with C = 0.1).
-clf = None
+clf = svm.SVC(kernel='linear', C=0.1, random_state=1, probability=True)
 
 # FIXME: Fit the SVC model using the training data.
+clf.fit(X_train, y_train)
 
 # FIXME: Predict the labelling.
-y_pred = None
+y_pred = clf.predict(X_train)
 
 # FIXME: Compute the training accuracy.
-acc_train = None
+acc_train = np.mean(y_pred == y_train)
 print('Training Accuracy: {:.2f}%\n'.format(acc_train * 100))
 
 # %% =================== Part 4: Test Spam Classification ================
@@ -88,16 +91,16 @@ print('Training Accuracy: {:.2f}%\n'.format(acc_train * 100))
 
 # FIXME: Load the test dataset ('data/spamTest_X.csv', 'data/spamTest_y.csv').
 # You will have Xtest, ytest in your environment
-X_test = None
-y_test = None
+X_test = np.genfromtxt('data/spamTest_X.csv', delimiter=',')
+y_test = np.genfromtxt('data/spamTest_y.csv', delimiter=',')
 
 print('\nEvaluating the trained Linear SVM on a test set ...\n')
 
 # FIXME: Predict the labelling.
-y_pred = None
+y_pred = clf.predict(X_test)
 
 # FIXME: Compute the training accuracy.
-acc_test = None
+acc_test = np.mean(y_pred == y_test)
 print('Test Accuracy: {:.2f}%\n'.format(acc_test * 100))
 
 # input('Program paused. Press enter to continue.\n')
@@ -116,16 +119,16 @@ print('Test Accuracy: {:.2f}%\n'.format(acc_test * 100))
 # - Obtain the indices that would sort the weights in the descending order.
 # - Obtain the vocabulary.
 
-weights = None
-idx = None
+weights = clf.coef_.reshape(-1)
+idx = np.argsort(-weights) # Descent order
 
-vocabulary_dict = None
+vocabulary_dict = get_vocabulary_dict()
 
 print('\nTop predictors of spam: \n')
 for i in range(15):
     # FIXME: Replace each `None` with an appropriate expression.
     print(' {word:<20}: {weight:10.6f}'.format(
-        word=None, weight=None))
+        word=vocabulary_dict[idx[i]], weight=weights[idx[i]]))
 
 print('\n\n')
 # input('\nProgram paused. Press enter to continue.\n')
@@ -148,7 +151,7 @@ file_contents = read_file(filename)
 word_indices = process_email(file_contents)
 x = email_features(word_indices)
 # FIXME: Predict the labelling.
-y_pred = None
+y_pred = clf.predict(X_test)
 
 print('\nProcessed {}\n\nSpam Classification: {}\n'.format(filename, y_pred[0] > 0))
 print('(1 indicates spam, 0 indicates not spam)\n\n')

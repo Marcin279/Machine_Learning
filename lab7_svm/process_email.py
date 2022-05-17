@@ -17,10 +17,10 @@ def process_email(email_contents: str) -> List[int]:
     """
 
     # FIXME: Load the vocabulary.
-    vocabulary_dict = None
+    vocabulary_dict = get_vocabulary_dict()
 
     # FIXME: Initialize the return value.
-    word_indices = None
+    word_indices = []
 
     # ========================== Preprocess Email ===========================
 
@@ -44,21 +44,23 @@ def process_email(email_contents: str) -> List[int]:
     # FIXME: Handle numbers.
     # DONE:
     # Convert all sequences of digits (0-9) to a 'number' token.
-    email_contents = re.sub('/[0-9]/ ', 'number', email_contents)
+    email_contents = re.sub('[0-9]+ ', 'number', email_contents)
 
     # FIXME: Handle URLs.
     # Convert all strings starting with http:// or https:// to a 'httpaddr' token.
     # DONE  
-    email_contents = re.sub('https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)', 'httpaddr', email_contents)
+    # email_contents = re.sub('https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)', 'httpaddr', email_contents)
+    email_contents = re.sub('(http|https)://[^\S]*', 'httpaddr', email_contents)
 
     # FIXME: Handle email addresses.
     # DONE
     # Convert all strings with @ in the middle to a 'emailaddr' token.
-    email_contents = re.sub("^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$", 'emailaddr', email_contents)
+    email_contents = re.sub('[^\S]+@[^\S]+', 'emailaddr', email_contents)
 
     # FIXME: Handle $ sign
     # Convert all sequences of $ signs to a 'dollar' token.
-    email_contents = re.sub('(?=.*[@#$%^&+=]).*$', 'dollar', email_contents)
+    # email_contents = re.sub('(?=.*[@#$%^&+=]).*$', 'dollar', email_contents)
+    email_contents = re.sub('[$]+', 'dollar', email_contents)
 
     # ========================== Tokenize Email ===========================
 
@@ -105,7 +107,9 @@ def process_email(email_contents: str) -> List[int]:
         #       str2). It will return 1 only if the two strings are equivalent.
         #
 
-        raise NotImplementedError()
+        for n, w in vocabulary_dict.items():
+            if w == token:
+                word_indices.append(n)
 
         # ========================= END OF YOUR CODE ==========================
 
