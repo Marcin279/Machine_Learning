@@ -23,17 +23,3 @@ def get_vocabulary_dict() -> Dict[int, str]:
             parser_dict[elem_id] = elem_vacab
 
     return parser_dict
-
-
-# def get_vocabulary_dict() -> Dict[int, str]:
-#     diction = {}
-#     with open('data/vocab.txt', newline='') as file:
-#         spamreader = csv.reader(file, delimiter='\t')
-#         for row in spamreader:
-#             print(row)
-#             # diction[int(row[0])] = row[1]
-#     file.close()
-#     return diction
-
-
-# print('len', len(get_vocabulary_dict()))
